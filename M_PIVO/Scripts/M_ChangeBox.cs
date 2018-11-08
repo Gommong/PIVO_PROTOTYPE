@@ -54,17 +54,28 @@ public class M_ChangeBox : MonoBehaviour {
         {
             if (Input.GetMouseButton(0))
             {
+                IsSuccess = true;
                 if (Input.mousePosition.x < 500f)//마우스 중앙 500,250
                 {
                     m_increaseSizeValueZ = (500f - Input.mousePosition.x) * m_increaseMaxSize.z * 0.002f;
                     transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, m_increaseSizeValueZ);
                     transform.position = StartPosition + new Vector3(0, 0, m_increaseSizeValueZ * 0.5f);
-                    ViewEffect.transform.position = StartPosition + new Vector3(0, 0, m_increaseSizeValueZ - 0.4f);
-                    IsSuccess = true;
+                    ViewEffect.transform.position = StartPosition + new Vector3(0, 0, m_increaseSizeValueZ);
                 }
                 else
                 {
-                    IsSuccess = false;
+                    m_increaseSizeValueZ = (500f - Input.mousePosition.x) * m_increaseMaxSize.z * -0.002f;
+                    transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, m_increaseSizeValueZ);
+                    transform.position = StartPosition + new Vector3(0, 0, m_increaseSizeValueZ * -0.5f);
+                    ViewEffect.transform.position = StartPosition - new Vector3(0, 0, m_increaseSizeValueZ);
+                }
+
+                RaycastHit hit;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray.origin, ray.direction, out hit))
+                {
+                    if (hit.collider.gameObject.layer == 11)
+                        IsSuccess = false;
                 }
             }
         }
