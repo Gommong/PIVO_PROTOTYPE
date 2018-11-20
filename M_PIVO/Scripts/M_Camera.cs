@@ -8,7 +8,7 @@ public class M_Camera : MonoBehaviour {
     Animator Anim;
     M_NavigationCorgi NavigationScript;    
     M_ChangeManager ChangeManager;    
-    M_WayPoint WayPoint, LevelManager;
+    //M_WayPoint WayPoint, LevelManager;
 
     [SerializeField]
     private float ChangeWaiting;
@@ -22,7 +22,7 @@ public class M_Camera : MonoBehaviour {
         Corgi = GameObject.FindGameObjectWithTag("Player");
         NavigationCorgi = GameObject.FindGameObjectWithTag("GameController");
         ChangeManager = GameObject.Find("ChangeManager").GetComponent<M_ChangeManager>();
-        LevelManager = GameObject.Find("LevelManager").GetComponent<M_WayPoint>();
+        //LevelManager = GameObject.Find("LevelManager").GetComponent<M_WayPoint>();
         NavigationScript = NavigationCorgi.GetComponent<M_NavigationCorgi>();
         Anim = GetComponentInChildren<Animator>();
 
@@ -51,6 +51,11 @@ public class M_Camera : MonoBehaviour {
             Anim.SetTrigger("Change2D");
         else
             Anim.SetTrigger("Change3D");
+    }
+
+    public void LevelSequence()
+    {
+        Anim.SetTrigger("CloseUp");
     }
 
     void Follow()
@@ -91,7 +96,7 @@ public class M_Camera : MonoBehaviour {
 
                 if (hit.collider.tag == "Tile")
                 {
-                    WayPoint = hit.collider.gameObject.GetComponentInParent<M_WayPoint>();
+                    //WayPoint = hit.collider.gameObject.GetComponentInParent<M_WayPoint>();
                 }
             }
         }
@@ -111,10 +116,11 @@ public class M_Camera : MonoBehaviour {
 
             if (IsMove)
             {
-                if (WayPoint.WayPointNum <= LevelManager.WayPointNum)
-                {
-                    NavigationScript.NavigationInit(hit);
-                }
+                //if (WayPoint.WayPointNum <= LevelManager.WayPointNum)
+                //{
+                //    NavigationScript.NavigationInit(hit);
+                //}
+                NavigationScript.NavigationInit(hit);
             }
             IsMove = false;
         }
@@ -125,7 +131,6 @@ public class M_Camera : MonoBehaviour {
             Vector3 CorgiPos = Corgi.transform.position;
 
             Vector3 Destiny = Input.mousePosition;
-            Debug.Log(Destiny);
             float X;
             if (Destiny.x > 500)
                 X = CorgiPos.x + Time.deltaTime * 15f;

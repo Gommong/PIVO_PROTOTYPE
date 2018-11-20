@@ -27,6 +27,7 @@ public class M_Corgi : MonoBehaviour {
 
     Animator AnimState;
     M_ChangeManager ChangeManager;
+    M_Camera CameraScript;
 
 	void Start () {
         MoveDefault = MoveSpeed;
@@ -36,11 +37,12 @@ public class M_Corgi : MonoBehaviour {
 
         AnimState = GetComponentInChildren<Animator>();
         ChangeManager = GameObject.Find("ChangeManager").GetComponent<M_ChangeManager>();
+        CameraScript = GameObject.Find("CameraGroup").GetComponent<M_Camera>();
     }
 
     void Update()
     {
-        Move();        
+        Move();
     }
 
     public void Ray3D()
@@ -168,6 +170,7 @@ public class M_Corgi : MonoBehaviour {
         M_NavigationCorgi NavigationScript = Navigation.GetComponent<M_NavigationCorgi>();
         NavigationScript.NextMove = transform.position;
         NavigationScript.MovePos = transform.position;
+        LastMovePos = transform.position;
     }
 
     public void Move()
@@ -218,6 +221,19 @@ public class M_Corgi : MonoBehaviour {
                 Corgi2D.transform.localScale = new Vector3(1, 1, 1);
             else if (transform.position.x > MovePos.x)
                 Corgi2D.transform.localScale = new Vector3(-1, 1, 1);
+        }
+    }
+
+    public void ClearStage()
+    {
+        if (ChangeManager.WorldState == M_ChangeManager.WorldStateEnum.Is3D)
+        {
+            Is3DInit();
+            CameraScript.LevelSequence();
+        }
+        else
+        {
+            MovePos = transform.position;
         }
     }
 
