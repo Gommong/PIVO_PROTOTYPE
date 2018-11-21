@@ -12,7 +12,7 @@ public class M_SwipeManager : MonoBehaviour {
 
     bool MouseCheck = false;
 
-    public Vector3 CenterSize, OtherSize;
+    public float CenterScale, OtherScale;
     public float Object2Distance;
 
 
@@ -77,17 +77,23 @@ public class M_SwipeManager : MonoBehaviour {
         return SwipeObjectNum;
     }
 
+    void InitializedSwipeObjectSize()
+    {
+        for (int i = 0; i < GameObject.FindGameObjectsWithTag("SwipeObject").Length; i++)
+            SwipeObjects[i].GetComponent<RectTransform>().sizeDelta = new Vector2(280, 280);
+    }
+
     void SwipeObjectSizeControl()
     {
         for (int i = 0; i < GameObject.FindGameObjectsWithTag("SwipeObject").Length; i++)
         {
             if (FindCenter() == i)
             {
-                SwipeObjects[i].GetComponent<RectTransform>().sizeDelta = CenterSize;
+                SwipeObjects[i].GetComponent<RectTransform>().localScale = new Vector3(CenterScale, CenterScale, CenterScale);
             }
             else
             {
-                SwipeObjects[i].GetComponent<RectTransform>().sizeDelta = OtherSize;
+                SwipeObjects[i].GetComponent<RectTransform>().localScale = new Vector3(OtherScale, OtherScale, OtherScale);
             }
         }            
     }
@@ -138,6 +144,7 @@ public class M_SwipeManager : MonoBehaviour {
     {
         CheckSwipeObject();
         SwipeObjectDistanceControl();
+        InitializedSwipeObjectSize();
     }
 
     void Update()

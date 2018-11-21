@@ -8,11 +8,12 @@ public class M_StageSelectManager : MonoBehaviour {
 
     List<GameObject> SwipeObjects = new List<GameObject>();
 
-    private bool[] CanPlay;
-    private bool[] IsClear;
+    private bool[] CanPlay;//플레이 가능한지를 확인
+    private bool[] IsClear;//해당 스테이지가 클리어 됐는지 확인
     private int StageLength;
     private float[,] StageData;
     private int ToCheatNum = 1;
+    private string StageManager = "StageManager";
 
     public GameObject StageSelectButton;
 
@@ -21,7 +22,6 @@ public class M_StageSelectManager : MonoBehaviour {
     public Text RequiredGemText;
     public Text ConsumeBiscuitText;
 
-    private string StageManager = "StageManager";
     private int RequiredGem = 20; //오 되네
     private int ConsumedBiscuit = 10;
 
@@ -46,7 +46,6 @@ public class M_StageSelectManager : MonoBehaviour {
         IsClearCheat();
     }
 
-    //Update라는 용어는 말그대로 Update에서 사용되도록 하는 함수이므로 Update라는 이름을 한 번부르는 함수에서 사용하지 말아주세요
     void CostUIInitialize() //스테이지 들어가는 조건 UI에 값넣어주는건데 한번만 돌면 돼서 흠
     {
         RequiredGemText.text = RequiredGem.ToString(); 
@@ -65,7 +64,7 @@ public class M_StageSelectManager : MonoBehaviour {
         GameObject.Find(StageManager).GetComponent<M_CostManager>().TotalGem = TotalGem;
     }
 
-    void ChangeEnableStage(GameObject SWObject, bool bState)
+    void ChangeEnableStage(GameObject SWObject, bool bState)//스테이지를 활성화할 때 색을 바꿔주는 함수이다.
     {
         if (bState)
         {
@@ -83,7 +82,7 @@ public class M_StageSelectManager : MonoBehaviour {
         }
     }
 
-    void CheckSwipeObject(int Length)
+    void CheckSwipeObject(int Length)//선택할 수 있는 스테이지 갯수가 몇개인지 확인한다.
     {
         for (int i = 0; i < Length; i++)
         {
@@ -91,7 +90,7 @@ public class M_StageSelectManager : MonoBehaviour {
         }
     }
 
-    bool CheckStageOpen(float a, float b, float c)
+    bool CheckStageOpen(float a, float b, float c)//3가지 조건이 만족되면 true를 아니라면 false를 리턴한다.
     {
         bool ReturnValue = false;
 
@@ -109,9 +108,10 @@ public class M_StageSelectManager : MonoBehaviour {
         return ReturnValue;
     }
 
-    void ButtonControl()
+    void ButtonControl()//스테이지 입장하기 버튼의 활성화/비활성화를 관리한다.
     {
         int CenterNum = GameObject.Find("SwipeManager").GetComponent<M_SwipeManager>().FindCenter();
+        //FindCenter함수는 중앙에 있는 스테이지의 배열번호를 리턴한다.
 
         if (CanPlay[CenterNum])
             StageSelectButton.SetActive(true);
@@ -119,7 +119,7 @@ public class M_StageSelectManager : MonoBehaviour {
             StageSelectButton.SetActive(false);
     }
 
-    void IsClearCheat()
+    void IsClearCheat()//Z키를 누르면 클리어한 스테이지가 하나씩 올라간다.
     {
         if (Input.GetKeyDown(KeyCode.Z))
         {
@@ -128,7 +128,7 @@ public class M_StageSelectManager : MonoBehaviour {
         }
     }
 
-    void StageEnableControl()
+    void StageEnableControl()//입장 가능한 스테이지의 색를 활성화 시켜준다.
     {
         for (int i = 0; i < StageLength; i++)
         {
@@ -140,7 +140,7 @@ public class M_StageSelectManager : MonoBehaviour {
         }
     }
 
-    void InitializeStageSelectManager()
+    void InitializeStageSelectManager()//시작할 때, 모든 스테이지를 비활성화 상태로 만든다.
     {
         for (int i = 0; i < StageLength; i++)
         {
@@ -148,7 +148,7 @@ public class M_StageSelectManager : MonoBehaviour {
         }
     }
 
-    void InitializeData()
+    void InitializeData()//데이터값을 초기화한다.
     {
         StageLength = GameObject.FindGameObjectsWithTag("SwipeObject").Length;
         
