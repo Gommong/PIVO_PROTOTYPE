@@ -4,31 +4,20 @@ using UnityEngine;
 
 public class M_SwipeManager : MonoBehaviour {
 
-    List<GameObject> SwifeObjects = new List<GameObject>();
-    GameObject SwifeLine;
-
-    public Vector2 CenterSize, SecondSize, LastSize;
-    public Vector3 CenterPos, SecondPos, LastPos;
+    List<GameObject> SwipeObjects = new List<GameObject>();
+    GameObject SwipeLine;
 
     Vector3 ClickPos1 = Vector3.zero;
     Vector3 ClickPos2 = Vector3.zero;
 
-    int CenterSwifeObjectNum = 2;
-    int CompareDistance = 400;
     bool MouseCheck = false;
 
-    void Start () {
-        CheckSwifeObject();
-        ChangeSizePos();
-    }
+    public Vector3 CenterSize, OtherSize;
+    public float Object2Distance;
 
-    void Update()
-    {
-        CenterSwifeObjectControl();
-        CheckCenterSwifeObject();
-    }
 
-    void CenterSwifeObjectControl()
+
+    void SwipeLineControl()
     {
         if (Input.GetMouseButtonDown(0))
         {
@@ -44,83 +33,116 @@ public class M_SwipeManager : MonoBehaviour {
         {
             ClickPos2 = Input.mousePosition;
             float ClickPosDistance = ClickPos1.x - ClickPos2.x;
-            MoveSwifeLine(ClickPosDistance);
+            MoveSwipeLine(ClickPosDistance);
 
             if (ClickPosDistance != 0)
             {
                 ClickPos1 = ClickPos2;
             }
         }
+
+        AutoMovingSwipeLine();
     }
 
-    void MoveSwifeLine(float Distance)
+    void MoveSwipeLine(float Distance)
     {
-        SwifeLine.GetComponent<RectTransform>().localPosition += new Vector3(-Distance, 0, 0);
+        SwipeLine.GetComponent<RectTransform>().localPosition += new Vector3(-Distance, 0, 0);
     }
 
-    void ChangeSizePos()
+    void CheckSwipeObject()
     {
-        SwifeObjects[CenterSwifeObjectNum].GetComponent<RectTransform>().sizeDelta = CenterSize;
-        CenterPos = SwifeObjects[CenterSwifeObjectNum].GetComponent<RectTransform>().localPosition;
-        
-        for (int i = 0; i < SwifeObjects.Count; i++)
+        for (int i = 0; i < GameObject.FindGameObjectsWithTag("SwipeObject").Length; i++)
         {
-            if (i != CenterSwifeObjectNum)
+            SwipeObjects.Add(GameObject.Find("SwipeObject" + i.ToString()));
+        }
+
+        SwipeLine = GameObject.Find("SwipeObjectLine");
+    }
+    
+    public int FindCenter()
+    {
+        int SwipeObjectNum = 0;
+        float Distance = 1000;
+
+        for (int i = 0; i < GameObject.FindGameObjectsWithTag("SwipeObject").Length; i++)
+        {            
+            float SwipeObjectDistance = Mathf.Abs(500 - SwipeObjects[i].transform.position.x);
+            if (Distance > SwipeObjectDistance)
             {
-                SwifeObjects[i].GetComponent<RectTransform>().sizeDelta = SecondSize;
+                Distance = SwipeObjectDistance;
+                SwipeObjectNum = i;
             }
         }
 
-        for (int i = CenterSwifeObjectNum - 1; i > 0 - 1; i--)
+        return SwipeObjectNum;
+    }
+
+    void SwipeObjectSizeControl()
+    {
+        for (int i = 0; i < GameObject.FindGameObjectsWithTag("SwipeObject").Length; i++)
         {
-            Vector3 Pos = SwifeObjects[i + 1].GetComponent<RectTransform>().localPosition;
-            if (i + 1 == CenterSwifeObjectNum)
+            if (FindCenter() == i)
             {
-                SwifeObjects[i].GetComponent<RectTransform>().localPosition = Pos - SecondPos;
+                SwipeObjects[i].GetComponent<RectTransform>().sizeDelta = CenterSize;
             }
             else
             {
-                SwifeObjects[i].GetComponent<RectTransform>().localPosition = Pos - LastPos;
+                SwipeObjects[i].GetComponent<RectTransform>().sizeDelta = OtherSize;
             }
-        }
+        }            
+    }
 
-        for (int i = CenterSwifeObjectNum + 1; i < SwifeObjects.Count; i++)
+    void AutoMovingSwipeLine()
+    {
+        float MoveSpeed = 10;
+
+        if (!MouseCheck)
         {
-            Vector3 Pos = SwifeObjects[i - 1].GetComponent<RectTransform>().localPosition;
-            if (i - 1 == CenterSwifeObjectNum)
+            if (SwipeObjects[FindCenter()].transform.position.x < 520)
             {
-                SwifeObjects[i].GetComponent<RectTransform>().localPosition = Pos + SecondPos;
+                MoveSwipeLine(-MoveSpeed);
             }
-            else
+            else if (SwipeObjects[FindCenter()].transform.position.x > 530)
             {
-                SwifeObjects[i].GetComponent<RectTransform>().localPosition = Pos + LastPos;
+                MoveSwipeLine(MoveSpeed);
             }
         }
     }
 
-    void CheckCenterSwifeObject()
+    void SwipeObjectDistanceControl()
     {
-        if (SwifeLine.GetComponent<RectTransform>().localPosition.x > CompareDistance)
+        for (int i = 0; i < GameObject.FindGameObjectsWithTag("SwipeObject").Length; i++)
         {
-            CompareDistance += 400;
-            CenterSwifeObjectNum--;
-            ChangeSizePos();
-        }
-        else if (SwifeLine.GetComponent<RectTransform>().localPosition.x < CompareDistance - 800)
-        {
-            CompareDistance -= 400;
-            CenterSwifeObjectNum++;
-            ChangeSizePos();
+            SwipeObjects[i].transform.position = SwipeObjects[FindCenter()].transform.position;
+            if (i < FindCenter())
+            {
+                float a = FindCenter() - i;
+                SwipeObjects[i].transform.position = SwipeObjects[i].transform.position - new Vector3(Object2Distance*a, 0, 0);
+            }
+            else if (i > FindCenter())
+            {
+                float b = i - FindCenter();
+                SwipeObjects[i].transform.position = SwipeObjects[i].transform.position + new Vector3(Object2Distance*b, 0, 0);
+            }
         }
     }
 
-    void CheckSwifeObject()
-    {
-        for (int i = 0; i < GameObject.FindGameObjectsWithTag("SwifeObject").Length; i++)
-        {
-            SwifeObjects.Add(GameObject.Find("SwifeObject" + i.ToString()));
-        }
 
-        SwifeLine = GameObject.Find("SwifeObjectLine");
+
+    //EventFunction//
+
+    
+    
+    
+    void Start()
+    {
+        CheckSwipeObject();
+        SwipeObjectDistanceControl();
+    }
+
+    void Update()
+    {
+        SwipeLineControl();        
+        SwipeObjectSizeControl();        
     }
 }

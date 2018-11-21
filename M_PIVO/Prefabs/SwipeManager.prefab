@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4930817704877270}
   - component: {fileID: 114917061636452518}
   m_Layer: 0
-  m_Name: SwifeManager
+  m_Name: SwipeManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -51,9 +51,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4496403896f40c844905babb548fe593, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CenterSize: {x: 600, y: 600}
-  SecondSize: {x: 350, y: 350}
-  LastSize: {x: 350, y: 350}
-  CenterPos: {x: 0, y: 0, z: 0}
-  SecondPos: {x: 480, y: 0, z: 0}
-  LastPos: {x: 370, y: 0, z: 0}
+  CenterSize: {x: 0, y: 0, z: 0}
+  OtherSize: {x: 0, y: 0, z: 0}
+  Object2Distance: 0
