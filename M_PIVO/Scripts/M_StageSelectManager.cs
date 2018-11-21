@@ -16,8 +16,7 @@ public class M_StageSelectManager : MonoBehaviour {
     private string StageManager = "StageManager";
 
     public GameObject StageSelectButton;
-
-    public GameObject CostUnlockStage;  //코스트없는거..
+    public GameObject UnlockUI, LockUI;
 
     public Text RequiredGemText;
     public Text ConsumeBiscuitText;
@@ -28,14 +27,14 @@ public class M_StageSelectManager : MonoBehaviour {
     private int TotalBiscuit;
     private int TotalGem;
     
-    private bool IsEntered = false;
 
 
     void Start ()
     {
         InitializeData();
-        CostUIInitialize();
+        //CostUIInitialize();
         InitializeStageSelectManager();
+        StageUIControl();
     }
 	
 	void Update ()
@@ -69,12 +68,6 @@ public class M_StageSelectManager : MonoBehaviour {
         if (bState)
         {
             SWObject.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-
-            //이거  자식 있으면 없애야
-            //for (int i = 0; i <= 2; i++)
-            //{
-            //    SWObject.transform.GetChild(i).gameObject.SetActive(false);
-            //}
         }
         else
         {
@@ -124,7 +117,7 @@ public class M_StageSelectManager : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Z))
         {
             IsClear[ToCheatNum] = true;
-            ToCheatNum++;
+            ToCheatNum++;            
         }
     }
 
@@ -137,6 +130,17 @@ public class M_StageSelectManager : MonoBehaviour {
                 ChangeEnableStage(SwipeObjects[i], true);
                 CanPlay[i] = true;
             }
+        }
+    }
+
+    void StageUIControl()
+    {
+        for (int i = 0; i < StageLength; i++)
+        {
+            GameObject UnlockUIObject = Instantiate(UnlockUI, Vector3.zero, Quaternion.identity);
+            UnlockUIObject.transform.parent = SwipeObjects[i].transform;
+            UnlockUIObject.transform.localPosition = new Vector3(0, 10, 0);
+            UnlockUIObject.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
         }
     }
 
