@@ -4,27 +4,26 @@ using UnityEngine;
 
 public class M_Biscuit : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    GameObject Corgi;
 
-    private void OnCollisionEnter(Collision collision)
+    void Start()
     {
-        Debug.Log("비스킷돼라아");
+        Corgi = GameObject.Find("Corgi");
     }
 
-
-    private void OnTriggerEnter(Collider other)
+    void Update()
     {
-       // if(other.tag  == "Player")
-       // {
-            Debug.Log("비스킷 뇸뇸");
-       // }
+        CheckDistance2Corgi();
+    }
+
+    void CheckDistance2Corgi()
+    {
+        float Dis;
+        Dis = Vector3.Distance(Corgi.transform.position, transform.position);
+
+        if (Dis < 3)
+        {
+            Destroy(gameObject);
+        }
     }
 }
