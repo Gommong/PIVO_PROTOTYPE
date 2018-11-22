@@ -32,11 +32,12 @@ public class M_StageSelectManager : MonoBehaviour {
         InitializeStageSelectManager();
         StageEnableControl();
         StageUIControl();
+        UpdateTotalCost();
     }
 	
 	void Update ()
     {
-        UpdateTotalCost();
+        ReturnTotalCost();
         ButtonControl();
         IsClearCheat();
     }
@@ -44,7 +45,7 @@ public class M_StageSelectManager : MonoBehaviour {
     void UpdateTotalCost()  //현재 얼마나 갖고 있는지 갱신하기
     {
         TotalBiscuit = GameObject.Find(StageManager).GetComponent<M_CostManager>().TotalBiscuit; 
-        TotalGem = GameObject.Find(StageManager).GetComponent<M_CostManager>().TotalGem; 
+        TotalGem = GameObject.Find(StageManager).GetComponent<M_CostManager>().TotalGem;
     }
 
     void ReturnTotalCost()  //여기서 변한 값 CostManager에 돌려주기
@@ -106,13 +107,14 @@ public class M_StageSelectManager : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            TotalBiscuit += 5;
+            TotalBiscuit += 10;
             IsClear[ToCheatNum] = true;
             ToCheatNum++;
 
             StageEnableControl();
             DestroyUI();
             StageUIControl();
+            GameObject.Find("SwipeManager").GetComponent<M_SwipeManager>().AutoMoving = false;
         }
     }
 

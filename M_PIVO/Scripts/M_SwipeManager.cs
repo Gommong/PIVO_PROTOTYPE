@@ -12,6 +12,7 @@ public class M_SwipeManager : MonoBehaviour {
 
     bool MouseCheck = false;
 
+    public bool AutoMoving = true;
     public float CenterScale, OtherScale;
     public float Object2Distance;
 
@@ -102,7 +103,7 @@ public class M_SwipeManager : MonoBehaviour {
     {
         float MoveSpeed = 10;
 
-        if (!MouseCheck)
+        if (!MouseCheck && AutoMoving)
         {
             if (SwipeObjects[FindCenter()].transform.position.x < 520)
             {
@@ -112,6 +113,12 @@ public class M_SwipeManager : MonoBehaviour {
             {
                 MoveSwipeLine(MoveSpeed);
             }
+        }
+        else if (!AutoMoving)
+        {
+            MoveSwipeLine(MoveSpeed);
+            if (SwipeObjects[FindCenter()].transform.position.x > 600)
+                AutoMoving = true;
         }
     }
 
