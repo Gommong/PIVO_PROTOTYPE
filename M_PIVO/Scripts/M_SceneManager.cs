@@ -12,8 +12,7 @@ public class M_SceneManager : MonoBehaviour {
     {
         if (Scene == SceneName.ToSelect)
         {
-            //Application.LoadLevel("M_StageSelect");
-            Application.LoadLevel("M_Title");
+            Application.LoadLevel("M_StageSelect");
         }
         else if (Scene == SceneName.ToPlay)
         {

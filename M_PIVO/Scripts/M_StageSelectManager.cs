@@ -17,10 +17,7 @@ public class M_StageSelectManager : MonoBehaviour {
 
     public GameObject StageSelectButton;
     public GameObject UnlockUI, LockUI;
-
-    public Text RequiredGemText;
-    public Text ConsumeBiscuitText;
-
+    
     private int RequiredGem = 20; //오 되네
     private int ConsumedBiscuit = 10;
 
@@ -32,23 +29,16 @@ public class M_StageSelectManager : MonoBehaviour {
     void Start ()
     {
         InitializeData();
-        //CostUIInitialize();
         InitializeStageSelectManager();
+        StageEnableControl();
         StageUIControl();
     }
 	
 	void Update ()
     {
         UpdateTotalCost();
-        StageEnableControl();
         ButtonControl();
         IsClearCheat();
-    }
-
-    void CostUIInitialize() //스테이지 들어가는 조건 UI에 값넣어주는건데 한번만 돌면 돼서 흠
-    {
-        RequiredGemText.text = RequiredGem.ToString(); 
-        ConsumeBiscuitText.text = ConsumedBiscuit.ToString();
     }
 
     void UpdateTotalCost()  //현재 얼마나 갖고 있는지 갱신하기
@@ -89,11 +79,11 @@ public class M_StageSelectManager : MonoBehaviour {
 
         if (IsClear[(int)a] == true)
         {
-            if (b <= TotalGem)
-            {
+            //if (b <= TotalGem)
+            //{
                 if (c <= TotalBiscuit)
                     ReturnValue = true;
-            }
+            //}
         }
         else
             ReturnValue = false;
@@ -116,8 +106,13 @@ public class M_StageSelectManager : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.Z))
         {
+            TotalBiscuit += 5;
             IsClear[ToCheatNum] = true;
-            ToCheatNum++;            
+            ToCheatNum++;
+
+            StageEnableControl();
+            DestroyUI();
+            StageUIControl();
         }
     }
 
@@ -133,14 +128,33 @@ public class M_StageSelectManager : MonoBehaviour {
         }
     }
 
+    void DestroyUI()//자식으로 있는 UI 삭제
+    {
+        for (int i = 0; i < StageLength; i++)
+        {
+            Destroy(SwipeObjects[i].transform.GetChild(0).gameObject);
+        }
+    }
+
     void StageUIControl()
     {
         for (int i = 0; i < StageLength; i++)
         {
-            GameObject UnlockUIObject = Instantiate(UnlockUI, Vector3.zero, Quaternion.identity);
-            UnlockUIObject.transform.parent = SwipeObjects[i].transform;
-            UnlockUIObject.transform.localPosition = new Vector3(0, 10, 0);
-            UnlockUIObject.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+            GameObject UIObject;
+            if (CanPlay[i])
+            {
+                UIObject = Instantiate(UnlockUI, Vector3.zero, Quaternion.identity);
+            }
+            else
+            {
+                UIObject = Instantiate(LockUI, Vector3.zero, Quaternion.identity);
+            }
+
+            UIObject.transform.parent = SwipeObjects[i].transform;
+            UIObject.transform.localPosition = new Vector3(0, 10, 0);
+            UIObject.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+            int StageNumber = i + 1;
+            UIObject.transform.GetChild(1).GetComponent<Text>().text = StageNumber.ToString();
         }
     }
 
